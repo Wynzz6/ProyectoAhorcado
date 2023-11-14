@@ -1,7 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class VentanaAhorcado extends JFrame {
 
@@ -12,6 +16,9 @@ public class VentanaAhorcado extends JFrame {
     private JLabel iblIntentos;
     private JTextField txtLetra;
     private JButton btnAdivinar;
+
+    private JLabel iblImagen;
+
 
     public VentanaAhorcado() {
         super("Juego del Ahorcado");
@@ -57,6 +64,21 @@ public class VentanaAhorcado extends JFrame {
         add(panel, BorderLayout.CENTER);
     }
 
+    public void dibujarAhorcado() {
+        pnlImagen.removeAll();
+        int intentosRestantes = juego.getIntentosRestantes();
+        if(intentosRestantes == 6) {
+            BufferedImage myPicture = null;
+            try {
+                myPicture = ImageIO.read(new File("imagenes/"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+            pnlImagen.add(picLabel);
+        }
+    }
+
     private void adivinarLetra() {
         if (!juego.juegoTerminado()) {
             String letraIngresada = txtLetra.getText().toLowerCase();
@@ -73,6 +95,7 @@ public class VentanaAhorcado extends JFrame {
                     reiniciarJuego();
                     dispose();  // Cerrar la ventana después de adivinar la palabra
                 } else if (!letraAdivinada) {
+                    dibujarAhorcado();
                     JOptionPane.showMessageDialog(this, "Incorrecto. La letra no está en la palabra.");
                     if (juego.juegoTerminado()) {
                         JOptionPane.showMessageDialog(this, "¡Se acabaron los intentos! La palabra era: " + juego.getPalabraSecreta());
