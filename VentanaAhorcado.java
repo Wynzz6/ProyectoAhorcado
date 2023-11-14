@@ -8,10 +8,10 @@ public class VentanaAhorcado extends JFrame {
     private Ahorcado juego;
     private Diccionario diccionario;
 
-    private JLabel palabraLabel;
-    private JLabel intentosLabel;
-    private JTextField letraTextField;
-    private JButton adivinarButton;
+    private JLabel iblPalabra;
+    private JLabel iblIntentos;
+    private JTextField txtLetra;
+    private JButton btnAdivinar;
 
     public VentanaAhorcado() {
         super("Juego del Ahorcado");
@@ -33,14 +33,14 @@ public class VentanaAhorcado extends JFrame {
     }
 
     private void initComponents() {
-        palabraLabel = new JLabel(obtenerPalabraOculta());
-        palabraLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        palabraLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        iblPalabra = new JLabel(obtenerPalabraOculta());
+        iblPalabra.setFont(new Font("Arial", Font.BOLD, 20));
+        iblPalabra.setHorizontalAlignment(SwingConstants.CENTER);
 
-        intentosLabel = new JLabel("Intentos restantes: " + juego.getIntentosRestantes());
-        letraTextField = new JTextField();
-        adivinarButton = new JButton("Adivinar");
-        adivinarButton.addActionListener(new ActionListener() {
+        iblIntentos = new JLabel("Intentos restantes: " + juego.getIntentosRestantes());
+        txtLetra = new JTextField();
+        btnAdivinar = new JButton("Adivinar");
+        btnAdivinar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 adivinarLetra();
@@ -49,24 +49,24 @@ public class VentanaAhorcado extends JFrame {
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(4, 1));
-        panel.add(palabraLabel);
-        panel.add(intentosLabel);
-        panel.add(letraTextField);
-        panel.add(adivinarButton);
+        panel.add(iblPalabra);
+        panel.add(iblIntentos);
+        panel.add(txtLetra);
+        panel.add(btnAdivinar);
 
         add(panel, BorderLayout.CENTER);
     }
 
     private void adivinarLetra() {
         if (!juego.juegoTerminado()) {
-            String letraIngresada = letraTextField.getText().toLowerCase();
+            String letraIngresada = txtLetra.getText().toLowerCase();
             if (letraIngresada.length() == 1 && Character.isLetter(letraIngresada.charAt(0))) {
                 char letra = letraIngresada.charAt(0);
                 boolean letraAdivinada = juego.adivinarLetra(letra);
 
-                palabraLabel.setText(obtenerPalabraOculta());
-                intentosLabel.setText("Intentos restantes: " + juego.getIntentosRestantes());
-                letraTextField.setText("");
+                iblPalabra.setText(obtenerPalabraOculta());
+                iblIntentos.setText("Intentos restantes: " + juego.getIntentosRestantes());
+                txtLetra.setText("");
 
                 if (juego.palabraCompletada()) {
                     JOptionPane.showMessageDialog(this, "¡Felicidades! Has adivinado la palabra: " + juego.getPalabraSecreta());
