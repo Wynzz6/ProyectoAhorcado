@@ -19,11 +19,15 @@ public class VentanaAhorcado extends JFrame {
 
     private JLabel iblImagen;
 
+    private JPanel pnlImagen;
+
+    private BufferedImage myPicture;
 
     public VentanaAhorcado() {
         super("Juego del Ahorcado");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 200);
+
+        setSize(400, 400);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -54,6 +58,17 @@ public class VentanaAhorcado extends JFrame {
             }
         });
 
+        pnlImagen = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (myPicture != null) {
+                    g.drawImage(myPicture, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
+        pnlImagen.setPreferredSize(new Dimension(261, 254));
+
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(4, 1));
         panel.add(iblPalabra);
@@ -62,20 +77,21 @@ public class VentanaAhorcado extends JFrame {
         panel.add(btnAdivinar);
 
         add(panel, BorderLayout.CENTER);
+        add(pnlImagen, BorderLayout.SOUTH);
+
+        dibujarAhorcado();
     }
 
-    public void dibujarAhorcado() {
-        pnlImagen.removeAll();
-        int intentosRestantes = juego.getIntentosRestantes();
-        if(intentosRestantes == 6) {
-            BufferedImage myPicture = null;
-            try {
-                myPicture = ImageIO.read(new File("imagenes/"));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+    private void dibujarAhorcado() {
+        try {
+            int intentosRestantes = juego.getIntentosRestantes();
+            if (intentosRestantes <= 7 && intentosRestantes > 0) {
+                String rutaImagen = "C:\\Users\\Usuario\\Pictures\\ahorcado_" + (intentosRestantes - 1) + ".png";
+                myPicture = ImageIO.read(new File(rutaImagen));
+                pnlImagen.repaint();
             }
-            JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-            pnlImagen.add(picLabel);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -93,14 +109,14 @@ public class VentanaAhorcado extends JFrame {
                 if (juego.palabraCompletada()) {
                     JOptionPane.showMessageDialog(this, "¡Felicidades! Has adivinado la palabra: " + juego.getPalabraSecreta());
                     reiniciarJuego();
-                    dispose();  // Cerrar la ventana después de adivinar la palabra
+                    dispose();
                 } else if (!letraAdivinada) {
                     dibujarAhorcado();
                     JOptionPane.showMessageDialog(this, "Incorrecto. La letra no está en la palabra.");
                     if (juego.juegoTerminado()) {
                         JOptionPane.showMessageDialog(this, "¡Se acabaron los intentos! La palabra era: " + juego.getPalabraSecreta());
                         reiniciarJuego();
-                        dispose();  // Cerrar la ventana después de agotar los intentos
+                        dispose();
                     }
                 }
             } else {
